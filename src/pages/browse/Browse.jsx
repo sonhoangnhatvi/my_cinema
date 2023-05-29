@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import useHttp from "../../hooks/use-http";
-import { MOVIE_API_KEY, fetchActionMovies } from "../../constants/api";
+import {
+  MOVIE_API_KEY,
+  fetchNetflixOriginals,
+  fetchTrending,
+  fetchTopRated,
+  fetchActionMovies,
+  fetchComedyMovies,
+  fetchHorrorMovies,
+  fetchRomanceMovies,
+  fetchDocumentaries,
+} from "../../constants/api";
 import Banner from "../../components/Banner/Banner";
 import MovieList from "../../components/MovieList/MovieList";
+import classes from "./Browse.module.css";
 
 function Browse() {
   // use State for movie list
@@ -11,7 +22,6 @@ function Browse() {
   const [movieForBanner, setMovieForBanner] = useState({});
 
   const transformTasksMovies = (jsonResponse) => {
-    console.log("jsonResponse", jsonResponse);
     const movieList = jsonResponse.results;
     const loadedMovie = [];
     for (const movie in movieList) {
@@ -27,8 +37,6 @@ function Browse() {
     setMovieForBanner(
       loadedMovie[Math.floor(Math.random() * loadedMovie.length - 1)]
     );
-
-    console.log("movieList", movieListOriginals);
   };
 
   // TMDB API Key : 011ddc01dd093d9988cf1b87c378aece
@@ -58,24 +66,71 @@ function Browse() {
 
     fetchTasks(
       {
-        url: `https://api.themoviedb.org/3${requests.fetchTrending}`,
+        url: `https://api.themoviedb.org/3${requests.fetchNetflixOriginals}`,
       },
       transformTasksMovies
     );
-  }, [fetchTasks]);
+  }, [fetchTasks, API_KEY]);
+
+  const movieList = [
+    {
+      url: `https://api.themoviedb.org/3${fetchNetflixOriginals}`,
+      type: "Original",
+      title: "Netflix Originals",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchTrending}`,
+      type: "",
+      title: "Xu hướng",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchTopRated}`,
+      type: "",
+      title: "Xếp hạng cao",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchActionMovies}`,
+      type: "",
+      title: "Hành động",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchComedyMovies}`,
+      type: "",
+      title: "Hài",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchHorrorMovies}`,
+      type: "",
+      title: "Kinh dị",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchRomanceMovies}`,
+      type: "",
+      title: "Lãng mạn",
+    },
+    {
+      url: `https://api.themoviedb.org/3${fetchDocumentaries}`,
+      type: "",
+      title: "Tài liệu",
+    },
+  ];
 
   return (
-    <div className="app">
+    <div className={classes.app}>
       <Banner movieForBanner={movieForBanner} />
       <Navbar />
-      {/* <MovieList api_endpoint={re} /> */}
-      {/* <MovieList />
-      <MovieList />
-      <MovieList />
-      <MovieList />
-      <MovieList />
-      <MovieList />
-      <MovieList /> */}
+      {movieList.map((movie) => {
+        return (
+          <MovieList
+            key={movie.url}
+            movieInfo={{
+              url: movie.url,
+              type: movie.type,
+              title: movie.title,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

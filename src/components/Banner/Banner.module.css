@@ -3,12 +3,12 @@
 }
 
 .banner {
-  height: 500px;
+  height: 800px;
   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 10px;
+  padding-left: 10px; 
 }
 
 .movie_title {
@@ -30,4 +30,5 @@
 .overview {
   color: white;
   margin-top: 10px;
+  width: 20%;
 }

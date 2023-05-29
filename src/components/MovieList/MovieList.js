@@ -1,56 +1,59 @@
 import { useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
+import classes from "./MovieList.module.css";
 
-const MovieList = ({ props }) => {
+const MovieList = (props) => {
   // use State for movie list
-  //   const [movieList, setMovieList] = useState([]);
+  const [movieList, setMovieList] = useState([]);
 
-  //   const transformTasksMovies = (jsonResponse) => {
-  //     console.log("jsonResponse", jsonResponse);
-  //     const movieList = jsonResponse.results;
-  //     const loadedMovie = [];
-  //     for (const movie in movieList) {
-  //       loadedMovie.push({
-  //         id: movieList[movie].id,
-  //         original_name: movieList[movie].original_name,
-  //         overview: movieList[movie].overview,
-  //         backdrop_path: movieList[movie].backdrop_path,
-  //         poster_path: movieList[movie].poster_path,
-  //       });
-  //     }
-  //     setMovieListOriginals(loadedMovie);
-  //     setMovieForBanner(
-  //       loadedMovie[Math.floor(Math.random() * loadedMovie.length - 1)]
-  //     );
+  const transformTasksMovies = (jsonResponse) => {
+    const movieList = jsonResponse.results;
+    const loadedMovie = [];
+    for (const movie in movieList) {
+      loadedMovie.push({
+        id: movieList[movie].id,
+        original_name: movieList[movie].original_name,
+        overview: movieList[movie].overview,
+        backdrop_path: movieList[movie].backdrop_path,
+        poster_path: movieList[movie].poster_path,
+      });
+    }
+    setMovieList(loadedMovie);
+  };
 
-  //     console.log("movieList", movieListOriginals);
-  //   };
+  // use Http for fetching data
+  const { sendRequest: fetchTasks } = useHttp();
 
-  //     // use Http for fetching data
+  useEffect(() => {
+    fetchTasks(
+      {
+        url: `${props.movieInfo.url}`,
+      },
+      transformTasksMovies
+    );
+  }, [fetchTasks, props.movieInfo]);
 
-  //     useEffect(() => {
-  //         const requests = {
-  //           fetchNetflixOriginals: `/discover/tv?api_key=${API_KEY}&with_network=123`,
-  //           fetchTrending: `/trending/all/week?api_key=${API_KEY}&language=en-US`,
-  //           fetchTopRated: `/movie/top_rated?api_key=${API_KEY}&language=en-US`,
-  //           fetchActionMovies: `/discover/movie?api_key=${API_KEY}&with_genres=28`,
-  //           fetchComedyMovies: `/discover/movie?api_key=${API_KEY}&with_genres=35`,
-  //           fetchHorrorMovies: `/discover/movie?api_key=${API_KEY}&with_genres=27`,
-  //           fetchRomanceMovies: `/discover/movie?api_key=${API_KEY}&with_genres=10749`,
-  //           fetchDocumentaries: `/discover/movie?api_key=${API_KEY}&with_genres=99`,
-  //           fetchSearch: `/search/movie?api_key=${API_KEY}&language=en-US`,
-  //           fetchMovie: `/movie/550?api_key=${API_KEY}&language=en-US`,
-  //         };
+  const isOriginal = props.movieInfo.type === "Original" ? true : false;
 
-  //         fetchTasks(
-  //           {
-  //             url: `https://api.themoviedb.org/3${requests.fetchTrending}`,
-  //           },
-  //           transformTasksMovies
-  //         );
-  //       }, [fetchTasks]);
-
-  return <div></div>;
+  return (
+    <div className={classes.movie_list_container}>
+      <h3 className={classes.movie_list_title}>{props.movieInfo.title}</h3>
+      <div className={classes.movie_list}>
+        {movieList.map((movie) => {
+          return (
+            <img
+              className={classes.movie_poster}
+              key={movie.id}
+              src={`https://image.tmdb.org/t/p/original${
+                isOriginal ? movie.poster_path : movie.backdrop_path
+              }`}
+              alt={movie.original_name}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default MovieList;
