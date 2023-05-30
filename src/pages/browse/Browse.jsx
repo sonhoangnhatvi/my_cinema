@@ -15,13 +15,17 @@ import {
 import Banner from "../../components/Banner/Banner";
 import MovieList from "../../components/MovieList/MovieList";
 import classes from "./Browse.module.css";
+import MovieDetail from "../../components/MovieDetail/MovieDetail";
 
 function Browse() {
   // use State for movie list
   const [movieListOriginals, setMovieListOriginals] = useState([]);
   const [movieForBanner, setMovieForBanner] = useState({});
+  const [isShowMovieDetail, setIsShowMovieDetail] = useState(false);
+  const [movieDetailId, setMovieDetailId] = useState({});
 
   const transformTasksMovies = (jsonResponse) => {
+    console.log("jsonResponse", jsonResponse);
     const movieList = jsonResponse.results;
     const loadedMovie = [];
     for (const movie in movieList) {
@@ -115,10 +119,22 @@ function Browse() {
     },
   ];
 
+  const handleMovieClick = (movie) => {
+    setIsShowMovieDetail(true);
+    setMovieDetailId(movie.id);
+  };
+
+  const hideCartHandler = () => {
+    setIsShowMovieDetail(false);
+  };
+
   return (
     <div className={classes.app}>
       <Banner movieForBanner={movieForBanner} />
       <Navbar />
+      {isShowMovieDetail && (
+        <MovieDetail onClose={hideCartHandler} movieDetailId={movieDetailId} />
+      )}
       {movieList.map((movie) => {
         return (
           <MovieList
@@ -128,6 +144,7 @@ function Browse() {
               type: movie.type,
               title: movie.title,
             }}
+            onClick={handleMovieClick}
           />
         );
       })}

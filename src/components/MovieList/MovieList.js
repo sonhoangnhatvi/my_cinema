@@ -48,6 +48,7 @@ const MovieList = (props) => {
                 isOriginal ? movie.poster_path : movie.backdrop_path
               }`}
               alt={movie.original_name}
+              onClick={() => props.onClick(movie)}
             />
           );
         })}

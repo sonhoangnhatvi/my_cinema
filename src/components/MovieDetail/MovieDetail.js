@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
+import Modal from "../UI/Modal";
+import classes from "./MovieDetail.module.css";
+import { MOVIE_API_KEY } from "../../constants/api";
 
 const MovieDetail = (props) => {
-  // use State for movie detail
+  // // use State for movie detail
   const [movieDetail, setMovieDetail] = useState({});
 
   const transformTasksMovies = (jsonResponse) => {
-    console.log("jsonResponse", jsonResponse);
+    console.log("jsonResponse.results", jsonResponse.results);
+    //const
     // const movieList = jsonResponse.results;
     // const loadedMovie = [];
     // for (const movie in movieList) {
@@ -27,16 +31,16 @@ const MovieDetail = (props) => {
   useEffect(() => {
     fetchTasks(
       {
-        url: `${props.movieInfo.url}`,
+        url: `https://api.themoviedb.org/3/movie/${props.movieDetailId}/videos?api_key=${MOVIE_API_KEY}`,
       },
       transformTasksMovies
     );
-  }, [fetchTasks, props.movieInfo]);
+  }, [fetchTasks, props.movieDetailId]);
 
   return (
-    <div>
-      <h1>Movie Detail</h1>
-    </div>
+    <Modal className={classes.movie_detail} onClose={props.onClose}>
+      <h1 className={classes.movie_detail_title}>Movie Detail</h1>
+    </Modal>
   );
 };
 
