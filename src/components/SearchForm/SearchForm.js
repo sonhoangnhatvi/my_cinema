@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SearchIcon from "../Navbar/SearchIcon";
 import classes from "./SearchForm.module.css";
 import useHttp from "../../hooks/use-http";
@@ -7,6 +7,7 @@ import { MOVIE_API_KEY } from "../../constants/api";
 const SearchForm = (props) => {
   const [inputValue, setInputValue] = useState("");
   const [loadedSearchMovie, setLoadedSearchMovie] = useState([]);
+  const formRef = useRef(null);
 
   const transformTasksMovies = (jsonResponse) => {
     console.log("jsonResponse", jsonResponse);
@@ -29,10 +30,10 @@ const SearchForm = (props) => {
     props.sendDataToSearchPage(loadedSearchMovie);
   };
 
-  const handleBtnReset = () => {
-    props.sendDataToSearchPage([]);
-    setInputValue("");
-  };
+  // const handleBtnReset = () => {
+  //   props.sendDataToSearchPage([]);
+  //   setInputValue("");
+  // };
 
   const { isLoading, error, sendRequest: fetchTasks } = useHttp();
 
@@ -51,12 +52,34 @@ const SearchForm = (props) => {
     };
   }, [fetchTasks, inputValue]);
 
+  useEffect(() => {
+    const handleFormReset = () => {
+      // Perform desired actions after form reset
+      props.sendDataToSearchPage([]);
+      setInputValue("");
+    };
+
+    if (formRef.current) {
+      formRef.current.addEventListener("reset", handleFormReset);
+    }
+
+    return () => {
+      if (formRef.current) {
+        formRef.current.removeEventListener("reset", handleFormReset);
+      }
+    };
+  }, [props]);
+
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
 
   return (
-    <form className={classes.search_form_container} onSubmit={handleFormSubmit}>
+    <form
+      className={classes.search_form_container}
+      onSubmit={handleFormSubmit}
+      ref={formRef}
+    >
       <div className={classes.search_form}>
         <div className={classes.search_area}>
           <input
@@ -67,7 +90,7 @@ const SearchForm = (props) => {
           <SearchIcon type="search_form" />
         </div>
         <div className={classes.button_area}>
-          <button className={classes.btn_reset} onClick={handleBtnReset}>
+          <button type="reset" className={classes.btn_reset}>
             RESET
           </button>
           <button type="submit" className={classes.btn_search}>
