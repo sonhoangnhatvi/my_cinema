@@ -5,6 +5,8 @@ import classes from "./Navbar.module.css";
 const Navbar = (props) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [navbarClassNameScrolled, setNavbarClassNameScrolled] = useState("");
+  const [serachIconClassNameScrolled, setSerachIconClassNameScrolled] =
+    useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -12,8 +14,10 @@ const Navbar = (props) => {
       setScrollPosition(position);
       if (scrollPosition > 100) {
         setNavbarClassNameScrolled("navbar_scrolled");
+        setSerachIconClassNameScrolled("search_icon_scrolled");
       } else {
         setNavbarClassNameScrolled("");
+        setSerachIconClassNameScrolled("");
       }
     };
 
@@ -30,6 +34,10 @@ const Navbar = (props) => {
     navbarClassNameScrolled !== "" ? classes.navbar_scrolled : ""
   }`;
 
+  const searchIconCL = `${classes.search_icon} ${
+    serachIconClassNameScrolled !== "" ? classes.search_icon_scrolled : ""
+  }`;
+
   return (
     <div className={navbarCl}>
       <h1>
@@ -37,9 +45,9 @@ const Navbar = (props) => {
           Movie App
         </a>
       </h1>
-      <span className={classes.icon}>
-        <SearchIcon />
-      </span>
+      <a className={searchIconCL} href="/search">
+        <SearchIcon type="" />
+      </a>
     </div>
   );
 };

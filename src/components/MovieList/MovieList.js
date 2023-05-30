@@ -42,7 +42,7 @@ const MovieList = (props) => {
         {movieList.map((movie) => {
           return (
             <img
-              className={classes.movie_poster}
+              className={`${classes.movie_poster} ${classes.img_zoom}`}
               key={movie.id}
               src={`https://image.tmdb.org/t/p/original${
                 isOriginal ? movie.poster_path : movie.backdrop_path
