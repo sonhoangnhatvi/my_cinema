@@ -19,10 +19,9 @@ import MovieDetail from "../../components/MovieDetail/MovieDetail";
 
 function Browse() {
   // use State for movie list
-  const [movieListOriginals, setMovieListOriginals] = useState([]);
   const [movieForBanner, setMovieForBanner] = useState({});
   const [isShowMovieDetail, setIsShowMovieDetail] = useState(false);
-  const [movieDetailId, setMovieDetailId] = useState({});
+  const [movieDetail, setMovieDetail] = useState({});
 
   const transformTasksMovies = (jsonResponse) => {
     console.log("jsonResponse", jsonResponse);
@@ -35,6 +34,8 @@ function Browse() {
         overview: movieList[movie].overview,
         backdrop_path: movieList[movie].backdrop_path,
         poster_path: movieList[movie].poster_path,
+        first_air_date: movieList[movie].first_air_date,
+        vote_average: movieList[movie].vote_average,
       });
     }
     setMovieListOriginals(loadedMovie);
@@ -121,7 +122,7 @@ function Browse() {
 
   const handleMovieClick = (movie) => {
     setIsShowMovieDetail(true);
-    setMovieDetailId(movie.id);
+    setMovieDetail(movie);
   };
 
   const hideCartHandler = () => {
@@ -133,7 +134,7 @@ function Browse() {
       <Banner movieForBanner={movieForBanner} />
       <Navbar />
       {isShowMovieDetail && (
-        <MovieDetail onClose={hideCartHandler} movieDetailId={movieDetailId} />
+        <MovieDetail onClose={hideCartHandler} movieDetail={movieDetail} />
       )}
       {movieList.map((movie) => {
         return (

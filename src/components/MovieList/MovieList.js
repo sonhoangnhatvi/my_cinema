@@ -12,7 +12,7 @@ const MovieList = (props) => {
     for (const movie in movieList) {
       loadedMovie.push({
         id: movieList[movie].id,
-        original_name: movieList[movie].original_name,
+        original_title: movieList[movie].original_title,
         overview: movieList[movie].overview,
         backdrop_path: movieList[movie].backdrop_path,
         poster_path: movieList[movie].poster_path,
