@@ -1,14 +1,16 @@
+/* Reset CSS */
 * {
   box-sizing: border-box;
 }
 
+/* css for banner*/
 .banner {
   height: 800px;
   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 10px; 
+  padding-left: 10px;
 }
 
 .movie_title {

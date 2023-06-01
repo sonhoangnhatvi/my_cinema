@@ -1,10 +1,13 @@
 import classes from "./SearchIcon.module.css";
 
+// Search icon component
 const SearchIcon = (props) => {
+  // Handle search icon class name
   const svgCL =
     props.type === "search_form"
       ? classes.searchform_icon
       : classes.search_icon;
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

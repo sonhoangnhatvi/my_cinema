@@ -1,5 +1,6 @@
 import classes from "./Banner.module.css";
 
+// This component is used to display the banner of the movie
 const Banner = (props) => {
   return (
     <div

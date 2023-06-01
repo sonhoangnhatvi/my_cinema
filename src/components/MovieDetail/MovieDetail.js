@@ -1,17 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useHttp from "../../hooks/use-http";
 import Modal from "../UI/Modal";
 import classes from "./MovieDetail.module.css";
 import { MOVIE_API_KEY } from "../../constants/api";
 
 const MovieDetail = (props) => {
-  // // use State for movie detail
+  // Define state
+  // State for movie detail
   const [movieDetail, setMovieDetail] = useState({});
+  // State for hide/show Video trailer
+  const [isShowiframe, setIsShowiframe] = useState(true);
+  // State for hide/show Backdrop image
+  const [isShowBackdrop, setIsShowBackdrop] = useState(false);
 
+  // Handle transform data from API
   const transformTasksMovies = (jsonResponse) => {
-    console.log("jsonResponse.results", jsonResponse.results);
-    console.log("props.movieDetail", props.movieDetail);
     const movieDetailResults = jsonResponse.results;
+    const loadedMovieDetailResults = [];
+    // if movieDetailResults is empty, set movieDetail default value
     if (movieDetailResults.length === 0) {
       setMovieDetail({
         id: props.movieDetail.id,
@@ -26,8 +32,8 @@ const MovieDetail = (props) => {
         type: "",
         typeOrd: 0,
       });
+      // if movieDetailResults is not empty, set movieDetail value
     } else {
-      const loadedMovieDetailResults = [];
       for (const movie in movieDetailResults) {
         loadedMovieDetailResults.push({
           id: movieDetailResults[movie].id,
@@ -49,6 +55,7 @@ const MovieDetail = (props) => {
         });
       }
 
+      // Get first movie detail with type is Trailer or Teaser and site is YouTube
       const movieDetailGet = loadedMovieDetailResults
         .filter((movieDetail) => {
           return (
@@ -58,15 +65,37 @@ const MovieDetail = (props) => {
         })
         .sort((a, b) => a.typeOrd - b.typeOrd);
 
-      console.log("movieDetailGet", loadedMovieDetailResults);
+      // If movieDetailGet is empty, loadedMovieDetailResults is not empty, get first movie detail with site is YouTube and use Backdrop image instead of Video trailer
+      if (
+        movieDetailGet.length === 0 &&
+        loadedMovieDetailResults.length !== 0
+      ) {
+        // Get movie detail with site is YouTube
+        const loadedMovieDetailResultsFilterSite =
+          loadedMovieDetailResults.filter(
+            (movieDetail) => movieDetail.site === "YouTube"
+          );
 
-      setMovieDetail(movieDetailGet[0]);
+        // If loadedMovieDetailResultsFilterSite is not empty, set movieDetail value
+        if (loadedMovieDetailResultsFilterSite.length > 0) {
+          // Hide Video trailer
+          setIsShowiframe(false);
+          // Show Backdrop image
+          setIsShowBackdrop(true);
+          // Set movieDetail value
+          setMovieDetail(loadedMovieDetailResults[0]);
+        }
+      } else {
+        // Set movieDetail value
+        setMovieDetail(movieDetailGet[0]);
+      }
     }
   };
 
   // use Http for fetching data
   const { sendRequest: fetchTasks } = useHttp();
 
+  // Fetch data from API
   useEffect(() => {
     fetchTasks(
       {
@@ -91,12 +120,25 @@ const MovieDetail = (props) => {
           </div>
           <p className={classes.overview}>{movieDetail.overview}</p>
         </div>
-        <iframe
-          title={movieDetail.original_title}
-          width="100%"
-          height="400"
-          src={`https://www.youtube.com/embed/${movieDetail.key}`}
-        ></iframe>
+        {isShowiframe && (
+          <iframe
+            title={movieDetail.original_title}
+            width="100%"
+            height="400"
+            src={`https://www.youtube.com/embed/${movieDetail.key}`}
+          ></iframe>
+        )}
+        {isShowBackdrop && (
+          <img
+            className={classes.backdrop_path}
+            src={`https://image.tmdb.org/t/p/original${
+              movieDetail.backdrop_path !== null
+                ? movieDetail.backdrop_path
+                : movieDetail.poster_path
+            }`}
+            alt={movieDetail.original_name}
+          />
+        )}
       </div>
     </Modal>
   );

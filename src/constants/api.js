@@ -1,3 +1,4 @@
+// Definition: API constants for the movie database
 export const MOVIE_API_KEY = "011ddc01dd093d9988cf1b87c378aece";
 export const fetchNetflixOriginals = `/discover/tv?api_key=${MOVIE_API_KEY}&with_network=123`;
 export const fetchTrending = `/trending/all/week?api_key=${MOVIE_API_KEY}&language=en-US`;

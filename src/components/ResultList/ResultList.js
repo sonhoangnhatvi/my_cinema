@@ -1,7 +1,7 @@
 import classes from "./ResultList.module.css";
 
+// ResultList component
 const ResultList = (props) => {
-  console.log("props.movieList", props.movieList);
   return (
     <div>
       {props.movieList.map((movie) => {
@@ -11,6 +11,7 @@ const ResultList = (props) => {
             key={movie.id}
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
             alt={movie.original_name}
+            onClick={() => props.onClick(movie)}
           />
         );
       })}

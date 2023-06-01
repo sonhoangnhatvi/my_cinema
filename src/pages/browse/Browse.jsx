@@ -18,13 +18,16 @@ import classes from "./Browse.module.css";
 import MovieDetail from "../../components/MovieDetail/MovieDetail";
 
 function Browse() {
-  // use State for movie list
+  // Define state
+  // State for banner
   const [movieForBanner, setMovieForBanner] = useState({});
+  // State for show/hide movie detail
   const [isShowMovieDetail, setIsShowMovieDetail] = useState(false);
+  // State for movie detail
   const [movieDetail, setMovieDetail] = useState({});
 
+  // Handle transform data from API
   const transformTasksMovies = (jsonResponse) => {
-    console.log("jsonResponse", jsonResponse);
     const movieList = jsonResponse.results;
     const loadedMovie = [];
     for (const movie in movieList) {
@@ -38,45 +41,27 @@ function Browse() {
         vote_average: movieList[movie].vote_average,
       });
     }
-    setMovieListOriginals(loadedMovie);
+
+    // Set movie for banner
     setMovieForBanner(
       loadedMovie[Math.floor(Math.random() * loadedMovie.length - 1)]
     );
   };
 
-  // TMDB API Key : 011ddc01dd093d9988cf1b87c378aece
-  // API : https://api.themoviedb.org/3/movie/550?api_key=<Token>
-  // API : https://api.themoviedb.org/3/movie/550?api_key=011ddc01dd093d9988cf1b87c378aece
+  // Define custom hook
+  const { sendRequest: fetchTasks } = useHttp();
 
-  //const API_KEY = process.env.MOVIE_API_KEY;
-  const API_KEY = MOVIE_API_KEY;
-
-  //console.log("API_KEY", MOVIE_API_KEY);
-
-  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
-
+  // Fetch data from API
   useEffect(() => {
-    const requests = {
-      fetchNetflixOriginals: `/discover/tv?api_key=${API_KEY}&with_network=123`,
-      fetchTrending: `/trending/all/week?api_key=${API_KEY}&language=en-US`,
-      fetchTopRated: `/movie/top_rated?api_key=${API_KEY}&language=en-US`,
-      fetchActionMovies: `/discover/movie?api_key=${API_KEY}&with_genres=28`,
-      fetchComedyMovies: `/discover/movie?api_key=${API_KEY}&with_genres=35`,
-      fetchHorrorMovies: `/discover/movie?api_key=${API_KEY}&with_genres=27`,
-      fetchRomanceMovies: `/discover/movie?api_key=${API_KEY}&with_genres=10749`,
-      fetchDocumentaries: `/discover/movie?api_key=${API_KEY}&with_genres=99`,
-      fetchSearch: `/search/movie?api_key=${API_KEY}&language=en-US`,
-      fetchMovie: `/movie/550?api_key=${API_KEY}&language=en-US`,
-    };
-
     fetchTasks(
       {
-        url: `https://api.themoviedb.org/3${requests.fetchNetflixOriginals}`,
+        url: `https://api.themoviedb.org/3${fetchNetflixOriginals}`,
       },
       transformTasksMovies
     );
-  }, [fetchTasks, API_KEY]);
+  }, [fetchTasks]);
 
+  // Define movie list for browse page
   const movieList = [
     {
       url: `https://api.themoviedb.org/3${fetchNetflixOriginals}`,
@@ -120,12 +105,16 @@ function Browse() {
     },
   ];
 
+  // Handle click movie
   const handleMovieClick = (movie) => {
+    // Show movie detail
     setIsShowMovieDetail(true);
+    // Set movie detail
     setMovieDetail(movie);
   };
 
-  const hideCartHandler = () => {
+  // Handle hide movie detail
+  const hideMovieDetailHandler = () => {
     setIsShowMovieDetail(false);
   };
 
@@ -134,7 +123,10 @@ function Browse() {
       <Banner movieForBanner={movieForBanner} />
       <Navbar />
       {isShowMovieDetail && (
-        <MovieDetail onClose={hideCartHandler} movieDetail={movieDetail} />
+        <MovieDetail
+          onClose={hideMovieDetailHandler}
+          movieDetail={movieDetail}
+        />
       )}
       {movieList.map((movie) => {
         return (

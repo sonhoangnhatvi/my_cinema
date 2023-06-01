@@ -3,11 +3,16 @@ import SearchIcon from "./SearchIcon";
 import classes from "./Navbar.module.css";
 
 const Navbar = (props) => {
+  // Define state
+  // State for scroll position
   const [scrollPosition, setScrollPosition] = useState(0);
+  // State for navbar class name
   const [navbarClassNameScrolled, setNavbarClassNameScrolled] = useState("");
+  // State for search icon class name
   const [serachIconClassNameScrolled, setSerachIconClassNameScrolled] =
     useState("");
 
+  // Fetch data from API
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY;
@@ -30,10 +35,12 @@ const Navbar = (props) => {
     };
   }, [scrollPosition]);
 
+  // Handle navbar class name
   const navbarCl = `${classes.navbar} ${
     navbarClassNameScrolled !== "" ? classes.navbar_scrolled : ""
   }`;
 
+  // Handle search icon class name
   const searchIconCL = `${classes.search_icon} ${
     serachIconClassNameScrolled !== "" ? classes.search_icon_scrolled : ""
   }`;

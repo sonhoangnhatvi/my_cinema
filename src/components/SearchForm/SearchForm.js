@@ -5,38 +5,44 @@ import useHttp from "../../hooks/use-http";
 import { MOVIE_API_KEY } from "../../constants/api";
 
 const SearchForm = (props) => {
+  // Define state
+  // State for input value
   const [inputValue, setInputValue] = useState("");
+  // State for loaded movie
   const [loadedSearchMovie, setLoadedSearchMovie] = useState([]);
+  // State for from ref
   const formRef = useRef(null);
 
+  // Handle transform data from API
   const transformTasksMovies = (jsonResponse) => {
-    console.log("jsonResponse", jsonResponse);
     const movieList = jsonResponse.results;
     const loadedMovie = [];
     for (const movie in movieList) {
+      console.log("movie", movie);
       loadedMovie.push({
         id: movieList[movie].id,
-        original_name: movieList[movie].original_name,
+        original_title: movieList[movie].original_title,
         overview: movieList[movie].overview,
         backdrop_path: movieList[movie].backdrop_path,
         poster_path: movieList[movie].poster_path,
       });
     }
+
+    // Set loaded movie
     setLoadedSearchMovie(loadedMovie);
   };
 
+  // Handle form submit
   const handleFormSubmit = (event) => {
     event.preventDefault();
+    // Send data to search page
     props.sendDataToSearchPage(loadedSearchMovie);
   };
 
-  // const handleBtnReset = () => {
-  //   props.sendDataToSearchPage([]);
-  //   setInputValue("");
-  // };
+  // Use Http for fetching data
+  const { sendRequest: fetchTasks } = useHttp();
 
-  const { isLoading, error, sendRequest: fetchTasks } = useHttp();
-
+  // Fetch data from API
   useEffect(() => {
     const typingTimer = setTimeout(() => {
       fetchTasks(
@@ -52,6 +58,7 @@ const SearchForm = (props) => {
     };
   }, [fetchTasks, inputValue]);
 
+  // Handle form reset
   useEffect(() => {
     const handleFormReset = () => {
       // Perform desired actions after form reset
@@ -70,6 +77,7 @@ const SearchForm = (props) => {
     };
   }, [props]);
 
+  // Handle input change
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };

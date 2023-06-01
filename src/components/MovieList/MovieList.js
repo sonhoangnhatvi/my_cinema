@@ -6,6 +6,7 @@ const MovieList = (props) => {
   // use State for movie list
   const [movieList, setMovieList] = useState([]);
 
+  // Handle transform data from API
   const transformTasksMovies = (jsonResponse) => {
     const movieList = jsonResponse.results;
     const loadedMovie = [];
@@ -18,12 +19,15 @@ const MovieList = (props) => {
         poster_path: movieList[movie].poster_path,
       });
     }
+
+    // Set movie list
     setMovieList(loadedMovie);
   };
 
   // use Http for fetching data
   const { sendRequest: fetchTasks } = useHttp();
 
+  // Fetch data from API
   useEffect(() => {
     fetchTasks(
       {
@@ -33,6 +37,7 @@ const MovieList = (props) => {
     );
   }, [fetchTasks, props.movieInfo]);
 
+  // Check type of movie
   const isOriginal = props.movieInfo.type === "Original" ? true : false;
 
   return (

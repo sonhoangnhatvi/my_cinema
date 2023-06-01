@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+// Custom hook for HTTP requests
 const useHttp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -8,9 +9,6 @@ const useHttp = () => {
     setIsLoading(true);
     setError(null);
     try {
-      // TMDB API Key : 011ddc01dd093d9988cf1b87c378aece
-      // API : https://api.themoviedb.org/3/movie/550?api_key=<Token>
-      // API : https://api.themoviedb.org/3/movie/550?api_key=011ddc01dd093d9988cf1b87c378aece
       const response = await fetch(requestConfig.url, {
         method: requestConfig.method ? requestConfig.method : "GET",
         headers: requestConfig.headers ? requestConfig.headers : {},
